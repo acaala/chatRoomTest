@@ -1,28 +1,36 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="center"><h1>ChatRoom</h1></div>
+    <chatRoom messages=""/>
+    <br/>
+    <div>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import chatRoom from './components/chatRoom'
+import {provideDatabase} from '@/hooks/database' 
 
 export default {
   name: 'App',
+  setup(){
+    provideDatabase();
+  },
   components: {
-    HelloWorld
+    chatRoom,
+
   }
 }
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-family: 'fira code'; 
+  background: rgb(134, 134, 134);
+}
+
+h1 {
+  color: #dddddd;
 }
 </style>
