@@ -36,44 +36,37 @@
 </template>
 
 <script>
-import {onMounted, ref} from 'vue'
+import {ref} from 'vue'
 import chatItem from './chatItem'
 import {formatDistance} from 'date-fns'
 
-import {useDatabase} from '@/hooks/database'
+import useFetchMessages  from '@/hooks/fetchMessages'
 
 export default {
   setup(){
-    const db = useDatabase();
     
-    const messages = ref({})
     const userMessage = ref('')
-
     const userName = ref( localStorage.getItem('username') || 'Anon')
+    const {messages, fetchMessages, createNewMessage} = useFetchMessages();
 
     const handleMessageSend = () => {
-        const now =  Date.now();
-        
-        const newDocumentForDb = {text: userMessage.value.trim(), created_at: now, username: userName}
+      const newDocumentForDb = {
+        text: userMessage.value.trim(), 
+        created_at: Date.now(), 
+        username: userName
+        }
 
-        db.insert(newDocumentForDb)
+        createNewMessage(newDocumentForDb);
+        fetchMessages()
 
-        db.find({}).sort({created_at: 1}).exec((err, res) =>{
-          messages.value = res
-        })
         userMessage.value = ''
       }
 
     const handleSetName = () => {
       localStorage.setItem('username', userName.value)
-    }
+    }  
 
-
-     onMounted( ()=>{
-       db.find({}).sort({created_at: 1}).exec((err, res) =>{
-        messages.value = res
-      })
-    })
+    fetchMessages();
     
     return {messages, userMessage, handleMessageSend, formatDistance, userName, handleSetName}
   },
